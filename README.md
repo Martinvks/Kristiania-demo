@@ -11,9 +11,9 @@ objekter man avhenger av til noen andre. I stedet får man objektet man bruker f
 argument i konstruktøren.
 
 Eksempel uten dependency injection
-```
+```java
 public class MailService {
-    private Mailklient mailklient;
+    private final Mailklient mailklient;
 
     public MailService() {
         mailklient = new Mailklient("https://api.selskap.no/mail");
@@ -27,8 +27,8 @@ public class MailService {
     }
 }
 ```
-Eksempel med dependency injection
-```
+Eksempel med constructor injection
+```java
 public class MailService {
     private final Mailklient mailklient;
 
@@ -44,6 +44,23 @@ public class MailService {
     }
 }
 ```
+Eksempel med setter injection 
+````java
+public class MailService {
+    private Mailklient mailklient;
+
+    public setMailklient(Mailklient mailklient) {
+        this.mailklient = mailklient;
+    }
+
+    public sendMail(
+        String mottaker,
+        String tekst
+    ) {
+        mailklient.sendEpost(mottaker, tekst);
+    }
+}
+````
 
 ## Demo applikasjon
 

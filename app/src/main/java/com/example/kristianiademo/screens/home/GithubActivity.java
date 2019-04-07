@@ -1,8 +1,10 @@
 package com.example.kristianiademo.screens.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.inputmethod.EditorInfo;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +41,6 @@ public class GithubActivity extends AppCompatActivity implements GithubActivityV
         EditText editText = findViewById(R.id.edit_text_github);
         Button searchButton = findViewById(R.id.button_github_search);
         searchButton.setOnClickListener((view) -> {
-            editText.onEditorAction(EditorInfo.IME_ACTION_DONE);
             githubActivityPresenter.onGithubUserSearch(editText.getText().toString());
         });
 
@@ -59,7 +60,7 @@ public class GithubActivity extends AppCompatActivity implements GithubActivityV
     @Override
     protected void onResume() {
         super.onResume();
-        githubActivityPresenter.attatch(this);
+        githubActivityPresenter.setGithubActivityView(this);
     }
 
     @Override
@@ -69,6 +70,20 @@ public class GithubActivity extends AppCompatActivity implements GithubActivityV
     }
 
     /* GithubActivityView callbacks */
+
+    @Override
+    public void hideSoftKeyboard() {
+        View view = this.getCurrentFocus();
+        if(view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(
+                    Context.INPUT_METHOD_SERVICE
+            );
+            imm.hideSoftInputFromWindow(
+                    view.getWindowToken(),
+                    InputMethodManager.RESULT_UNCHANGED_SHOWN
+            );
+        }
+    }
 
     @Override
     public void showGithubRepoList(List<String> repositories) {

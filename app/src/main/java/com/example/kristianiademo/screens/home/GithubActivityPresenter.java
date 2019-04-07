@@ -1,64 +1,55 @@
 package com.example.kristianiademo.screens.home;
 
+import android.support.annotation.NonNull;
+
 import com.example.kristianiademo.model.Repo;
 import com.example.kristianiademo.network.GithubService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class GithubActivityPresenter {
     private final GithubService githubService;
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
     private GithubActivityView githubActivityView;
 
-    public GithubActivityPresenter(GithubService githubService) {
+    public GithubActivityPresenter(@NonNull GithubService githubService) {
         this.githubService = githubService;
     }
 
-    public void attatch(GithubActivityView view) {
+    public void setGithubActivityView(GithubActivityView view) {
         githubActivityView = view;
     }
 
     public void detatch() {
+        disposable.clear();
         githubActivityView = null;
     }
 
     public void onGithubUserSearch(String username) {
+        githubActivityView.hideSoftKeyboard();
         username = username.trim();
         if (username.length() > 0) {
-            githubService.listRepos(username)
-                    .enqueue(getListReposResponseListener());
+            disposable.add(
+                    githubService.listRepos(username)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .flatMapIterable(x -> x)
+                            .map(Repo::getName)
+                            .toList()
+                            .subscribe(repositoryNames -> {
+                                        if (githubActivityView != null) {
+                                            githubActivityView.showGithubRepoList(repositoryNames);
+                                        }
+                                    },
+                                    throwable -> {
+                                        if (githubActivityView != null) {
+                                            githubActivityView.showErrorMessage("Ooops");
+                                        }
+                                    })
+            );
         }
     }
-
-    private Callback<List<Repo>> getListReposResponseListener() {
-        return new Callback<List<Repo>>() {
-            @Override
-            public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
-                if (response.isSuccessful()) {
-                    List<Repo> repos = response.body();
-                    List<String> repoNames = repos.stream()
-                            .map(Repo::getName)
-                            .collect(Collectors.toList());
-
-                    if (githubActivityView != null) {
-                        githubActivityView.showGithubRepoList(repoNames);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Repo>> call, Throwable t) {
-                if (githubActivityView != null) {
-                    githubActivityView.showErrorMessage("Ooops");
-                }
-            }
-        };
-    }
-
-
 }

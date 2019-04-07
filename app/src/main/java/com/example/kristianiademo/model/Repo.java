@@ -5,6 +5,12 @@ public class Repo {
     private String name;
     private String html_url;
 
+    public Repo(Integer id, String name, String html_url) {
+        this.id = id;
+        this.name = name;
+        this.html_url = html_url;
+    }
+
     public Integer getId() {
         return id;
     }
