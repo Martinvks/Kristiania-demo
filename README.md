@@ -73,7 +73,9 @@ repositoriene til brukeren.
 ![Dependency graph](dependency_graph.png?raw=true "Dependency graph")
 
 ## Biblioteker som er brukt
-Dagger: https://github.com/google/dagger
-Retrofit: https://square.github.io/retrofit/
-OkHttp: https://github.com/square/okhttp
-RxJava: https://github.com/ReactiveX/RxJava
+<ul>
+    <li>Dagger: https://github.com/google/dagger</li>
+    <li>Retrofit: https://square.github.io/retrofit/</li>
+    <li>OkHttp: https://github.com/square/okhttp</li>
+    <li>RxJava: https://github.com/ReactiveX/RxJava</li>
+</ul>
