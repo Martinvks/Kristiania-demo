@@ -67,6 +67,13 @@ public class MailService {
 Enkel Android applikasjon der brukeren kan taste inn et github brukernavn og få listet ut
 repositoriene til brukeren.
 
+![](demo.gif)
+
 ### Dependency graf
 ![Dependency graph](dependency_graph.png?raw=true "Dependency graph")
 
+## Biblioteker som er brukt
+Dagger: https://github.com/google/dagger
+Retrofit: https://square.github.io/retrofit/
+OkHttp: https://github.com/square/okhttp
+RxJava: https://github.com/ReactiveX/RxJava
